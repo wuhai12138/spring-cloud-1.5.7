@@ -2,7 +2,7 @@
 spring-cloud-1.5.7
 
 描述：
-jpx-admin spring-boot-admin 分布式微服管理平台
+jpx-admin spring-boot-admin 分布式微服管理平台 \n
 jpx-eureka 注册中心
 jpx-gateway 网关（修复大容量吞吐及上限假死问题）
 jpx-properties-serve 配置中心

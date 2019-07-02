@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sfy.demo.mapper.SysDictMapper">
+
+    <select id="findPage" parameterType="java.util.Map" resultType="com.sfy.demo.entity.SysDict">
+        select * from  sys_dict
+        <if test="params.dict_type != null and params.dict_type != ''">
+            where dict_type like "%"#{params.dict_type}"%"
+        </if>
+
+    </select>
+
+    </mapper>

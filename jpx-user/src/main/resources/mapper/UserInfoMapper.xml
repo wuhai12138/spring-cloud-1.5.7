@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sfy.user.mapper.UserInfoMapper">
+
+    <resultMap id="appUserDtoResult" type="com.sfy.user.dto.user.AppUserDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="first_name" jdbcType="VARCHAR" property="firstName"/>
+        <result column="last_name" jdbcType="VARCHAR" property="lastName"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="image_url" jdbcType="VARCHAR" property="imageUrl"/>
+        <result column="enabled" jdbcType="TINYINT" property="enabled"/>
+        <result column="password_revised" jdbcType="TINYINT" property="passwordRevised"/>
+        <result column="user_code" jdbcType="VARCHAR" property="userCode"/>
+        <result column="user_nickname" jdbcType="VARCHAR" property="userNickname"/>
+        <result column="user_address" jdbcType="VARCHAR" property="userAddress"/>
+        <result column="register_type" jdbcType="VARCHAR" property="registerType"/>
+        <result column="register_mobile" jdbcType="VARCHAR" property="registerMobile"/>
+        <result column="mobile_version" jdbcType="VARCHAR" property="mobileVersion"/>
+        <result column="app_version" jdbcType="VARCHAR" property="appVersion"/>
+        <result column="register_time" jdbcType="TIMESTAMP" property="registerTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="user_icon" jdbcType="VARCHAR" property="userIcon"/>
+        <result column="is_login" jdbcType="CHAR" property="isLogin"/>
+        <result column="login_time" jdbcType="TIMESTAMP" property="loginTime"/>
+        <result column="device_id" jdbcType="VARCHAR" property="deviceId"/>
+    </resultMap>
+
+    <select id="queryList" resultMap="appUserDtoResult">
+        SELECT
+          *
+        FROM
+          t_user_info info
+        LEFT JOIN `user` u on info.user_id = u.id
+        WHERE
+          u.id IN
+          <foreach collection="userIds" item="userId" separator="," open="(" close=")">
+              #{userId}
+          </foreach>
+    </select>
+
+
+</mapper>

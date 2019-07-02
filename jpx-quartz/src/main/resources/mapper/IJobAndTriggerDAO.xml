@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >  
+<mapper namespace="com.sfy.quartz.mapper.IJobAndTriggerDAO">
+    
+    <select id="getJobAndTriggerDetails" resultType="com.sfy.quartz.entity.JobAndTrigger">
+				select
+				qrtz_job_details.job_name as jobname,
+				qrtz_job_details.job_group as jobgroup,
+				qrtz_job_details.job_class_name as jobclassname,
+				qrtz_triggers.trigger_group as jobgroupname ,
+				qrtz_triggers.trigger_name as triggername,
+				qrtz_triggers.trigger_group as triggergroup ,
+				qrtz_cron_triggers.cron_expression as cronexpression,
+				qrtz_cron_triggers.time_zone_id as  timezoneid
+			from
+				qrtz_job_details
+			join qrtz_triggers
+			join qrtz_cron_triggers on qrtz_job_details.job_name = qrtz_triggers.job_name
+			and qrtz_triggers.trigger_name = qrtz_cron_triggers.trigger_name
+			and qrtz_triggers.trigger_group = qrtz_cron_triggers.trigger_group
+    </select>
+    
+</mapper>

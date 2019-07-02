@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.sfy</groupId>
+	<artifactId>jpx-service</artifactId>
+	<version>1.0</version>
+	<packaging>jar</packaging>
+	<name>jpx-service</name>
+	<description>${project.parent.version}</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.7.RELEASE</version>
+		<relativePath/>
+	</parent>
+
+	<properties>
+		<spring-cloud.version>Dalston.SR3</spring-cloud.version>
+	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Releases</name>
+			<url>http://192.168.1.33:7081/repository/maven-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<name>Snapshot</name>
+			<url>http://192.168.1.33:7081/repository/maven-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-hystrix-dashboard</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sfy.boot</groupId>
+			<artifactId>config</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sfy.utils</groupId>
+			<artifactId>utils</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+          <!-- canal -->
+		<dependency>
+			<groupId>com.alibaba.otter</groupId>
+			<artifactId>canal.client</artifactId>
+			<version>1.1.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-io</groupId>
+					<artifactId>commons-io</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>jcl-over-slf4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.zookeeper</groupId>
+					<artifactId>zookeeper</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources.${build.profile.id}</directory>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.0.0</version>
+
+				<!--将插件绑定在某个phase执行-->
+				<executions>
+					<execution>
+						<id>build-image</id>
+						<!--将插件绑定在package这个phase上。也就是说，用户只需执行mvn package ，就会自动执行mvn docker:build-->
+						<phase>package</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<configuration>
+					<forceTags>true</forceTags>
+					<!--指定生成的镜像名-->
+					<imageName>sfy/${project.artifactId}</imageName>
+					<!--指定标签-->
+					<imageTags>
+						<imageTag>latest</imageTag>
+					</imageTags>
+					<!-- 指定 Dockerfile 路径  ${project.basedir}：项目根路径下-->
+					<dockerDirectory>${project.basedir}</dockerDirectory>
+					<!--指定远程 docker api地址-->
+					<dockerHost>http://192.168.1.36:2375</dockerHost>
+					<!-- 这里是复制 jar 包到 docker 容器指定目录配置 -->
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<!--jar 包所在的路径  此处配置的 即对应 target 目录-->
+							<directory>${project.build.directory}</directory>
+							<!-- 需要包含的 jar包 ，这里对应的是 Dockerfile中添加的文件名　-->
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+
+					<!-- 以下两行是为了docker push到DockerHub使用的。 -->
+					<serverId>-dockerhub</serverId>
+					<registryUrl>https://index.docker.io/v1</registryUrl>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+				</plugin>
+				<!--spring-boot为了保护application.yml和application.properties，修改了默认的占位符${...}为@...@-->
+				<!--为了spring boot的yml和properties文件能够使用maven变量替换,使用${}占位符-->
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<configuration>
+						<encoding>utf-8</encoding>
+						<useDefaultDelimiters>true</useDefaultDelimiters>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.3</version>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+
+</project>

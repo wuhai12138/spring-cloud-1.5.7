@@ -1,0 +1,89 @@
+eureka-server: http://192.168.1.35:7777
+security-name: admin
+security-password: sfy@123@active
+spring-redis-database: 5 #Redis数据库索引（默认为0）
+spring-redis-host: 192.168.1.33 #Redis服务器地址
+spring-redis-port: 6379 #Redis服务器连接端口
+spring-redis-password: sfydev123 #Redis服务器连接密码（默认为空）
+spring-redis-timeout: 10000 #连接超时时间（毫秒）
+rabbitmq-host: 192.168.1.33
+rabbitmq-port: 5672
+rabbitmq-username: admin
+rabbitmq-password: sfydev123
+rabbitmq-virtualHost: sfy
+lease-renewal-interval-in-seconds: 10
+lease-expiration-duration-in-seconds: 30
+
+eureka:
+  instance:
+    appname: api-gateway
+    hostname: ${spring.cloud.client.ipAddress}
+    instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+    lease-renewal-interval-in-seconds: ${lease-renewal-interval-in-seconds}
+    lease-expiration-duration-in-seconds: ${lease-expiration-duration-in-seconds}
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+  client:
+    serviceUrl:
+      defaultZone: ${eureka-server}/eureka/
+
+spring:
+  redis:
+    database: ${spring-redis-database}
+    host: ${spring-redis-host}
+    port: ${spring-redis-port}
+    password: ${spring-redis-password}
+    timeout: ${spring-redis-timeout}
+  rabbitmq: #RabbitMQ相关的配置
+    host: ${rabbitmq-host}
+    port: ${rabbitmq-port}
+    username: ${rabbitmq-username}
+    password: ${rabbitmq-password}
+    virtualHost: ${rabbitmq-virtualHost}
+  http:
+    multipart:
+      max-file-size: 50Mb
+      max-request-size: 50Mb
+  jackson:
+    #date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: true  # 时间类型，返回时间戳
+
+feign:
+  hystrix:
+    enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+
+ribbon:
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
+
+zuul:
+  #需要忽略的头部信息，不在传播到其他服务
+  sensitive-headers: Access-Control-Allow-Origin
+  ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken
+  #  ribbon-isolation-strategy: SEMAPHORE
+  semaphore:
+    max-semaphores: 7000
+  host:
+    socket-timeout-millis: 7000
+    connect-timeout-millis: 7000
+
+management:
+  security:
+    enabled: false
+security:
+  user:
+    name: ${security-name}
+    password: ${security-password}

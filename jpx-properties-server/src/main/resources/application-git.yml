@@ -1,0 +1,35 @@
+#git配置
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: http://jinpengxiang@192.168.1.9:8099/r/service/properties.git
+          username: jinpengxiang
+          password: jinpengxiang
+          searchPaths: dev
+  rabbitmq:
+    host: 192.168.1.33
+    port: 5672
+    username: admin
+    password: sfydev123
+    virtualHost: sfy
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://192.168.1.35:7777/eureka/
+  instance:
+    preferIpAddress: true
+    hostname: ${spring.cloud.client.ipAddress}
+    instanceId: ${spring.cloud.client.ipAddress}:${server.port}
+
+management:
+  security:
+    enabled: false #是否开启actuator安全认证
+
+info:
+  app:
+    name: "@project.name@"
+    description: "@project.description@"
+    version: "@project.version@"

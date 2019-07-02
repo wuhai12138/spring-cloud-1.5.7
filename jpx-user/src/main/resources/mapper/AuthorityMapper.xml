@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sfy.user.mapper.AuthorityMapper">
+
+  <select id="findAuthorityByUserId" parameterType="java.util.Map" resultType="com.sfy.user.entity.Authority">
+    select * from authority where id in (SELECT authorities_id  FROM `role_authorities` where role_id in (select roles_id from user_roles where user_id=#{params.userId}))
+  </select>
+</mapper>

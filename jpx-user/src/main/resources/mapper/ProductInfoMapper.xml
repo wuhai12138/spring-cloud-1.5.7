@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sfy.user.mapper.ProductInfoMapper">
+
+    <resultMap id="padUserInfoResult" type="com.sfy.user.dto.user.PadUserDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="first_name" jdbcType="VARCHAR" property="firstName"/>
+        <result column="last_name" jdbcType="VARCHAR" property="lastName"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="image_url" jdbcType="VARCHAR" property="imageUrl"/>
+        <result column="enabled" jdbcType="TINYINT" property="enabled"/>
+        <result column="password_revised" jdbcType="TINYINT" property="passwordRevised"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName" />
+        <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+        <result column="device_manufacturer" jdbcType="VARCHAR" property="deviceManufacturer" />
+        <result column="app_version" jdbcType="VARCHAR" property="appVersion" />
+        <result column="pad_version" jdbcType="VARCHAR" property="padVersion" />
+        <result column="pad_icon" jdbcType="VARCHAR" property="padIcon" />
+        <result column="is_login" jdbcType="BIT" property="isLogin" />
+    </resultMap>
+
+  <!--根据padcode查找pad信息-->
+  <select id="findPadByProductCode" resultType="com.sfy.user.dto.user.PadUserDto">
+      SELECT
+          u.id AS id,
+          u.username AS username,
+          u.first_name as firstName,
+          u.last_name as lastName,
+          u.email as email,
+          u.mobile as mobile,
+          u.image_url as imageUrl,
+          u.enabled as enabled,
+          u.password_revised as passwordRevised,
+          p.product_code AS productCode,
+          p.product_id AS productId,
+          p.product_name AS productName,
+          p.device_manufacturer AS deviceManufacturer,
+          p.app_version AS appVersion,
+          p.pad_version AS padVersion,
+          p.pad_icon AS padIcon,
+          p.is_login AS isLogin
+      FROM
+          t_product_info p
+          LEFT JOIN `user` u ON u.id = p.user_id
+      WHERE
+          u.username = #{productCode}
+  </select>
+
+  <!--获取绑定结果列表  -->
+  <select id="listBinds" resultType="com.sfy.user.form.pad.ProductBindResult">
+      SELECT
+          product_code AS productCode,
+          product_name AS productName
+      FROM
+          t_product_info
+      WHERE product_code IN
+      <foreach collection="productCodes" open="(" close=")" separator="," item="productCode">
+          #{productCode}
+      </foreach>
+  </select>
+    <select id="queryList" resultMap="padUserInfoResult">
+        SELECT *
+        FROM t_product_info p
+        LEFT JOIN `user` u ON p.user_id = u.id
+        WHERE
+            u.id IN
+            <foreach collection="userIds" item="userId" separator="," open="(" close=")">
+                #{userId}
+            </foreach>
+    </select>
+</mapper>

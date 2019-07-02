@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: sfy-eureka
+#  profiles:
+#      active: dev
+  cloud:
+    config:
+      name: ${spring.application.name}  #文件前缀名称
+#      profile: dev #服务环境名称  例如 {name}-{profile} = service-gateway-dev.yml
+      uri: http://192.168.1.23:18899/sfy-config-server
+      label: master # configServer-git分支版本
+server:
+  port: 7777
+
+info:
+  app:
+    name: "@project.name@"
+    description: "@project.description@"
+    version: "@project.version@"
+
+logging:
+  config: classpath:log4j2.xml
+  file: /opt/jar/target/logs/${log4j2.root.name}-info/${log4j2.root.name}-info.log

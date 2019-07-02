@@ -1,0 +1,43 @@
+security-name: admin
+security-password: sfy@123@active
+rabbitmq-host: 192.168.1.33
+rabbitmq-port: 5672
+rabbitmq-username: admin
+rabbitmq-password: sfydev123
+rabbitmq-virtualHost: sfy
+lease-renewal-interval-in-seconds: 10
+lease-expiration-duration-in-seconds: 30
+
+eureka:
+  server:
+    enable-self-preservation: false
+  instance:
+    appname: sfy-admin
+    hostname: ${spring.cloud.client.ipAddress}
+    instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+    lease-renewal-interval-in-seconds: ${lease-renewal-interval-in-seconds}
+    lease-expiration-duration-in-seconds: ${lease-expiration-duration-in-seconds}
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+spring:
+  rabbitmq: #RabbitMQ相关的配置
+    host: ${rabbitmq-host}
+    port: ${rabbitmq-port}
+    username: ${rabbitmq-username}
+    password: ${rabbitmq-password}
+    virtualHost: ${rabbitmq-virtualHost}
+
+management:
+  security:
+    enabled: false
+security:
+  user:
+    name: ${security-name}
+    password: ${security-password}

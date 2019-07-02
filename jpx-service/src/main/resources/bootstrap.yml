@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: sfy-service
+#  profiles:
+#      active: dev
+  cloud:
+    config:
+      name: ${spring.application.name}  #文件前缀名称
+#      profile: dev #服务环境名称  例如 {name}-{profile} = service-gateway-dev.yml
+      uri: http://192.168.1.23:8899/sfy-config-server
+      label: master # configServer-git分支版本
+server:
+  port: 6119
+
+info:
+  info: "@project.name@-@project.description@"
+  version: "@project.description@"
+
+logging:
+  config: classpath:log4j2.xml
+  file: /opt/jar/target/logs/${log4j2.root.name}-info/${log4j2.root.name}-info.log
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        # 开启指定端点
+#        include: 'hystrix.stream'

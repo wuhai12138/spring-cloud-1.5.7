@@ -1,0 +1,98 @@
+eureka-server: http://192.168.1.35:7777
+spring-datasource-username: root
+spring-datasource-password: sfydev123
+spring-datasource-url: jdbc:mysql://192.168.1.33:3306/sfy-config?useUnicode=true&characterEncoding=utf-8&useSSL=false
+spring-redis-database: 5 #Redis数据库索引（默认为0）
+spring-redis-host: 192.168.1.33 #Redis服务器地址
+spring-redis-port: 6379 #Redis服务器连接端口
+spring-redis-password: sfydev123 #Redis服务器连接密码（默认为空）
+spring-redis-timeout: 10000 #连接超时时间（毫秒）
+hystrix-timeoutInMilliseconds: 3000
+security-server: http://192.168.1.23:18899
+security-name: admin
+security-password: sfy@123@active
+suagger-package: com.sfy.demo.controller
+suagger-title: 通用
+suagger-description: 通用接口文档说明
+suagger-version: all
+feign-url: http://192.168.1.23:18899
+rabbitmq-host: 192.168.1.33
+rabbitmq-port: 5672
+rabbitmq-username: admin
+rabbitmq-password: sfydev123
+rabbitmq-virtualHost: sfy
+client-id: clientId
+client-secret: secretId
+type-aliases-package: com.sfy.demo.entity
+mapper-locations: classpath*:/mapper/**/*.xml
+
+
+#业务模块与TxManager之间通讯的最大等待时间（单位：秒）
+transaction_netty_delay_time: 5
+#业务模块与TxManager之间通讯的心跳时间（单位：秒）
+transaction_netty_heart_time: 15
+#存储到redis下的数据最大保存时间（单位：秒）
+redis_save_max_time: 30
+#socket server Socket对外服务端口
+socket.port: 9991
+# 最大socket连接数
+socket.max.connection: 100
+
+peerEurekaNodesUpdateIntervalMs: 60000
+eurekaServiceUrlPollIntervalSeconds: 60
+maxActive: 200
+maxWait: -1
+maxIdle: 5
+minIdle: 0
+
+#spring.redis.host=${spring-redis-host}
+##redis主机端口
+#spring.redis.port=${spring-redis-port}
+##redis链接密码
+#spring.redis.password=${spring-redis-password}
+#spring.redis.pool.maxActive=200
+#spring.redis.pool.maxWait=-1
+#spring.redis.pool.maxIdle=5
+#spring.redis.pool.minIdle=0
+#spring.redis.timeout=${spring-redis-timeout}
+
+eureka:
+  instance:
+    hostname: ${hostname:localhost}
+    preferIpAddress: true
+  server:
+    peerEurekaNodesUpdateIntervalMs: ${peerEurekaNodesUpdateIntervalMs}
+    enableSelfPreservation: false
+  client:
+    serviceUrl:
+      defaultZone: ${eureka-server}/eureka/
+    healthcheck:
+      enabled: true
+    eurekaServiceUrlPollIntervalSeconds: ${eurekaServiceUrlPollIntervalSeconds}
+
+spring:
+  redis:
+    pool:
+      maxActive: ${maxActive}
+      maxWait: ${maxWait}
+      maxIdle: ${maxIdle}
+      minIdle: ${minIdle}
+    database: ${spring-redis-database}  #Redis数据库索引（默认为0）
+    host: ${spring-redis-host}
+    port: ${spring-redis-port}
+    password: ${spring-redis-password}
+    timeout: ${spring-redis-timeout}
+  rabbitmq: #RabbitMQ相关的配置
+    host: ${rabbitmq-host}
+    port: ${rabbitmq-port}
+    username: ${rabbitmq-username}
+    password: ${rabbitmq-password}
+    virtualHost: ${rabbitmq-virtualHost}
+
+endpoints:
+  health:
+    sensitive: false
+
+management:
+  security:
+    enabled: false

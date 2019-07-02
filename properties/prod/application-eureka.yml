@@ -1,0 +1,82 @@
+profile: dev111244444455vvvvvvlllll999999
+defaultZone-str: http://192.168.1.77:8888/eureka/
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${defaultZone-str}
+  instance:
+    preferIpAddress: true
+    hostname: ${spring.cloud.client.ipAddress}
+    instanceId: ${spring.cloud.client.ipAddress}:${server.port}
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+
+spring:
+  datasource:
+    username: root
+    password: sfydev123
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.1.12:3306/sfy-config?useUnicode=true&characterEncoding=utf-8&useSSL=true
+  redis:
+    #    database:  #Redis数据库索引（默认为0）
+    host: 192.168.1.12 #Redis服务器地址
+    port: 6379 #Redis服务器连接端口
+    password: sfydev123 #Redis服务器连接密码（默认为空）
+    timeout: 10000 #连接超时时间（毫秒）
+  rabbitmq: #RabbitMQ相关的配置
+    host: 192.168.1.33
+    port: 5672
+    username: admin
+    password: sfydev123
+
+feign:
+  hystrix:
+    enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 3000
+
+Myconfig: #自定义的属性和值
+  Package: com.sfy.demo.controller
+  title: 通用
+  description: 通用接口文档说明
+  version: all
+  redisPort: 6379
+  redisIp: 192.168.1.12
+  redisPassword: sfydev123
+
+security:
+  oauth2:
+    resource:
+      filter-order: 3
+      token-info-uri: http://192.168.1.33:8088/uaa/oauth/check_token
+    client:
+      client-id: clientId
+      client-secret: secretId
+      user-authorization-uri: http://192.168.1.33:8088/uaa/oauth/authorize
+      access-token-uri: http://192.168.1.33:8088/uaa/oauth/token
+  user:
+    name: admin
+    password: sfy@123@active
+
+info:
+  app:
+    name: "@project.name@"
+    description: "@project.description@"
+    version: "@project.version@"
+#    spring-boot-version: "@project.parent.version@"
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.sfy.demo.entity
+
+feign-url: http://192.168.1.23:8899
